@@ -31,3 +31,5 @@ jobs:
           file: ./docker/Dockerfile.backend
           push: true
           tags: karishma26/monorepo-deployment-cicd:${{ github.sha }}
+
+          
