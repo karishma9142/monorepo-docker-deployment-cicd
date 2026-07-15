@@ -41,14 +41,14 @@ jobs:
           username: ${{ secrets.DROPLET_USERNAME }}
           password: ${{ secrets.DROPLET_PASSWORD }}
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/monorepo-deployment-cicd:latest
+            /usr/bin/docker pull karishma26/monorepo-deployment-cicd:${{ github.sha }}
 
-            docker stop backend || true
-            docker rm backend || true
+            /usr/bin/docker stop backend || true
+            /usr/bin/docker rm backend || true
 
-            docker run -d \
+            /usr/bin/docker run -d \
               --name backend \
               --restart unless-stopped \
               -p 8080:8080 \
               -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
-              ${{ secrets.DOCKERHUB_USERNAME }}/monorepo-deployment-cicd:latest      
+              karishma26/monorepo-deployment-cicd:${{ github.sha }}
