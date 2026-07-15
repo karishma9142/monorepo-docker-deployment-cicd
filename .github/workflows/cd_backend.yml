@@ -33,3 +33,22 @@ jobs:
           tags: karishma26/monorepo-deployment-cicd:${{ github.sha }}
           build-args: |
             DATABASE_URL=${{ secrets.DATABASE_URL }}
+
+      - name: Deploy to DigitalOcean Droplet
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.DROPLET_HOST }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          password: ${{ secrets.DROPLET_PASSWORD }}
+          script: |
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/monorepo-deployment-cicd:latest
+
+            docker stop backend || true
+            docker rm backend || true
+
+            docker run -d \
+              --name backend \
+              --restart unless-stopped \
+              -p 8080:8080 \
+              -e DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+              ${{ secrets.DOCKERHUB_USERNAME }}/monorepo-deployment-cicd:latest      
